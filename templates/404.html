@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block titulo %}Página no encontrada{% endblock %}
+{% block contenido %}
+<div class="hp-panel hp-vacio" style="max-width:620px;margin:3rem auto">
+  <i class="bi bi-signpost-split"></i>
+  <h1 class="h3">Esta página no existe</h1>
+  <p>Puede que el registro se haya eliminado o que la dirección esté mal escrita.</p>
+  <a href="{% url 'core:dashboard' %}" class="btn btn-primary mt-2">Volver al dashboard</a>
+</div>
+{% endblock %}
