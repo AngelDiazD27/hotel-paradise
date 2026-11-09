@@ -1,0 +1,19 @@
+# Entorno virtual (cada quien crea el suyo, no se sube)
+venv/
+.venv/
+env/
+
+# Archivos que genera Python
+__pycache__/
+*.py[cod]
+
+# Base de datos local y fotos subidas: cada integrante tiene las suyas
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# Editores y sistema operativo
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
