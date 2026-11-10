@@ -14,5 +14,6 @@ from django.urls import include, path
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("core.urls")),                    # Integrante 4
+    path("cuentas/", include("cuentas.urls")),         # Integrante 5
 ]
 

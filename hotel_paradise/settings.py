@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Apps del proyecto (una por integrante)
     "core",            # Integrante 4 - Interfaz web y dashboard
+    "cuentas",         # Integrante 5 - Login, logout y usuarios
 ]
 
 MIDDLEWARE = [
@@ -66,6 +67,8 @@ TEMPLATES = [
                 "django.template.context_processors.media",
                 # Qué módulos están instalados, para armar el menú (Integrante 4).
                 "core.context_processors.modulos_instalados",
+                # Agrega `es_admin` y `rol_usuario` a todos los templates (Integrante 5).
+                "cuentas.context_processors.rol_usuario",
             ],
         },
     },
@@ -114,6 +117,12 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 
 
 
+# ---------------------------------------------------------------------------
+# Autenticación - Integrante 5
+# ---------------------------------------------------------------------------
+LOGIN_URL = "cuentas:login"            # A dónde se manda a quien no ha iniciado sesión
+LOGIN_REDIRECT_URL = "core:dashboard"  # A dónde va después de iniciar sesión
+LOGOUT_REDIRECT_URL = "cuentas:login"  # A dónde va después de cerrar sesión
 
 
 # ---------------------------------------------------------------------------
