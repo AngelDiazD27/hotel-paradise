@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block titulo %}Eliminar cliente{% endblock %}
+{% block contenido %}
+<div class="hp-panel" style="max-width:640px">
+  <div class="hp-panel-cuerpo">
+    <h1 class="h3">¿Eliminar a {{ cliente.nombre_completo }}?</h1>
+    {% if cliente.tiene_reservaciones_activas %}
+      <div class="alert alert-danger mt-3 mb-0"><strong>No se puede eliminar.</strong> Tiene reservaciones activas. Cancélalas primero.</div>
+      <a href="{{ cliente.get_absolute_url }}" class="btn btn-outline-secondary mt-3">Volver</a>
+    {% else %}
+      <p class="mt-2">Se borrará el cliente y su historial de reservaciones. Esta acción no se puede deshacer.</p>
+      <form method="post" class="d-flex gap-2">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Sí, eliminar cliente</button>
+        <a href="{{ cliente.get_absolute_url }}" class="btn btn-outline-secondary">Cancelar</a>
+      </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

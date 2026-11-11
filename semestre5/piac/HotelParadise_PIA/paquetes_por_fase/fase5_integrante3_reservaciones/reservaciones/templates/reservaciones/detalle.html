@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block titulo %}Reservación #{{ reservacion.pk }}{% endblock %}
+{% block contenido %}
+<nav aria-label="breadcrumb"><ol class="breadcrumb small">
+  <li class="breadcrumb-item"><a href="{% url 'reservaciones:lista' %}">Reservaciones</a></li>
+  <li class="breadcrumb-item active">#{{ reservacion.pk }}</li>
+</ol></nav>
+
+<div class="hp-panel" style="max-width:900px">
+  <div class="hp-panel-cabecera">
+    <div>
+      <h1 class="mb-0">Reservación #{{ reservacion.pk }}</h1>
+      <div class="text-secondary small">Registrada el {{ reservacion.creada|date:"d/m/Y H:i" }}</div>
+    </div>
+    <span class="hp-estado hp-estado-{{ reservacion.estado }} fs-6">{{ reservacion.get_estado_display }}</span>
+  </div>
+  <div class="hp-panel-cuerpo">
+    <div class="row g-4">
+      <div class="col-md-6">
+        <h2>Huésped</h2>
+        <p class="mb-1"><a href="{{ reservacion.cliente.get_absolute_url }}" class="fw-semibold">{{ reservacion.cliente.nombre_completo }}</a></p>
+        <p class="mb-1 text-secondary">{{ reservacion.cliente.correo }} · {{ reservacion.cliente.telefono }}</p>
+        <p class="mb-0">{{ reservacion.num_huespedes }} huésped{{ reservacion.num_huespedes|pluralize:"es" }}</p>
+      </div>
+      <div class="col-md-6">
+        <h2>Habitación</h2>
+        <p class="mb-1"><a href="{{ reservacion.habitacion.get_absolute_url }}" class="fw-semibold">Habitación {{ reservacion.habitacion.numero }}</a> · {{ reservacion.habitacion.get_tipo_display }}</p>
+        <p class="mb-0 text-secondary">${{ reservacion.habitacion.precio_noche|floatformat:"2g" }} por noche</p>
+      </div>
+      <div class="col-md-6">
+        <h2>Estancia</h2>
+        <p class="mb-0">Entrada: <strong>{{ reservacion.fecha_entrada|date:"l d/m/Y" }}</strong><br>
+        Salida: <strong>{{ reservacion.fecha_salida|date:"l d/m/Y" }}</strong><br>
+        {{ reservacion.noches }} noche{{ reservacion.noches|pluralize }}</p>
+      </div>
+      <div class="col-md-6">
+        <div class="hp-total-estimado">
+          <div class="text-secondary small">Total ({{ reservacion.noches }} × ${{ reservacion.habitacion.precio_noche|floatformat:"2g" }})</div>
+          <strong>${{ reservacion.total|floatformat:"2g" }} MXN</strong>
+        </div>
+      </div>
+      {% if reservacion.notas %}
+      <div class="col-12"><h2>Notas</h2><p class="mb-0">{{ reservacion.notas|linebreaksbr }}</p></div>
+      {% endif %}
+    </div>
+    <div class="d-flex flex-wrap gap-2 mt-4 no-print">
+      {% if perms.reservaciones.change_reservacion %}
+        <a href="{% url 'reservaciones:editar' reservacion.pk %}" class="btn btn-outline-primary"><i class="bi bi-pencil"></i> Modificar</a>
+        {% if reservacion.puede_cancelarse %}
+          <a href="{% url 'reservaciones:cancelar' reservacion.pk %}" class="btn btn-outline-danger"><i class="bi bi-x-circle"></i> Cancelar reservación</a>
+        {% endif %}
+      {% endif %}
+      <button type="button" class="btn btn-outline-secondary" onclick="window.print()"><i class="bi bi-printer"></i> Imprimir comprobante</button>
+    </div>
+  </div>
+</div>
+{% endblock %}

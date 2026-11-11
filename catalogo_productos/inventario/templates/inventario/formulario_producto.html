@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario de productos</title>
+</head>
+<body>
+
+    <h1>Formulario de productos</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">Guardar producto</button>
+    </form>
+
+    <a href="{% url 'lista_productos' %}">
+        Volver al catálogo
+    </a>
+
+</body>
+</html>

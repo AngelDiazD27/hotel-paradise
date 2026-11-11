@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>OMEGA MARK</title> 
+
+  <style>
+
+
+  body { 
+   font-family: 'Segoe UI', sans-serif;
+}
+
+.producto img {
+  width: 100%;      
+  height: 100px;    
+  object-fit: contain; 
+  border-radius: 10px;
+}
+
+  strong {
+    color: rgb(255, 123, 0);
+  }
+
+   ul { 
+    list-style-type: none;
+    display: flex; 
+    gap: 20px; 
+  }
+
+   a{
+    text-decoration: none; 
+    color: white;
+  }
+
+   header {
+    background-color:#168a45;
+    color: white;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+   }
+
+    .banner {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     background-color: #f5f5f5;
+     padding: 60px 20px;
+    }
+
+    button {
+      background-color: #ffd43b;
+      color: #0d6331;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 8px;
+    }
+
+    .Productos { 
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr; 
+      gap: 20px;
+      padding: 40px;
+      
+      
+    }
+
+    .producto {
+     background-color: white;
+     padding: 20px;
+     border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+     text-align: center;
+
+}
+    .Categorias {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr; 
+      gap: 20px;
+      padding: 40px;
+    }
+
+
+    .categoria {
+      background-color: #168a45;
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+
+
+    .Ofertas {
+      
+      display: grid;
+      grid-template-columns: 1fr 1fr; 
+      gap: 10px;
+      padding: 20px;
+    }
+
+    .ofertas {
+      background-color: #f5f5f5;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+
+    }
+
+
+
+    .Contactos {
+    padding: 40px;
+    text-align: center;
+    background-color: #f5f5f5;
+    }
+
+
+  </style>
+</head>
+<body>
+<header>
+  <h1>OMEGA MARK</h1>
+  <nav> 
+    <ul> 
+      <li><a href="#Inicio">Inicio</a></li> 
+      <li><a href="#Productos">Productos</a></li> 
+      <li><a href="#Categorias">Categorias</a></li>
+      <li><a href="#Ofertas">Ofertas</a></li> 
+      <li><a href="#Contactos">Contactos</a></li> 
+    </ul> 
+  </nav> 
+
+</header>
+
+ <section class="banner"> 
+  
+  <h2>Bienvenido a OMEGA MARK</h2>
+  <p>Tu tienda de confianza para productos de calidad.</p>
+  <button>Ver productos</button>
+</section> 
+
+<section class="Productos" id="Productos">
+  <div class="producto">
+    <h3>Leche lala 1ltr</h3>
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTolVX3lp_JLXu9sJOWglWzpXJ3MqrtKvoiG2L4Vn0ztQ&s=10" alt="Leche">
+    <p>Este producto es de la marca OMEGA y contiene 3.5% de grasa y es de 1 litro</p>
+    <span><strong>Precio: $26.50</strong></span>
+    <button>Agregar al carrito</button>
+</div>
+    <div class="producto">
+    <h3>Pan Blanco Bimbo Grande</h3>
+    <img src="https://i5-mx.walmartimages.com/gr/images/product-images/img_large/00750081002918L.jpg" alt="Pan Blanco">
+    <p>Pan de caja tradicional, ideal para sándwiches y desayunos.</p>
+    <span><strong>Precio: $52.00</strong></span>
+    <button>Agregar al carrito</button>  
+ </div>   
+        <div class="producto">
+    <h3>Huevo Blanco San Juan 12 pzs</h3>
+    <img src="https://www.soriana.com/on/demandware.static/-/Sites-soriana-grocery-master-catalog/default/dw1860f47a/images/product/7503000555011_A.jpg" alt="Huevo">
+    <p>Huevo Blanco San Juan 12 pzs</p>
+    <span><strong>Precio: $45.00</strong></span>
+    <button>Agregar al carrito</button>
+</div>
+        <div class="producto">
+    <h3>Arroz Súper Extra Verde Valle 900g</h3>
+    <img src="https://chedrauimx.vtexassets.com/arquivos/ids/75729066/7501071301698_00.jpg?v=639229334892930000" alt="Arroz">
+    <p>Arroz de grano largo, perfecto para acompañar tus platillos.</p>
+    <span><strong>Precio: $38.50</strong></span>
+    <button>Agregar al carrito</button>
+</div>
+        <div class="producto">
+    <h3>Cereal Zucaritas Kellogg's 710g</h3>
+    <img src="https://http2.mlstatic.com/D_NQ_NP_933910-MLM49375521155_032022-O.webp" alt="Cereal">
+    <p>Hojuelas de maíz escarchadas con azúcar, fortificadas con vitaminas.</p>
+    <span><strong>Precio: $82.00</strong></span>
+    <button>Agregar al carrito</button>
+</div>
+        <div class="producto">
+    <h3>Coca-Cola Original 600ml</h3>
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3bq1PWM2RBnjMoMRc5HEeC-eTVRdJSN5bU7KZgXSq51033RfUxpOlGqVi&s=10" alt="Refresco">
+    <p>Refresco de extracto de cola, botella no retornable.</p>
+    <span><strong>Precio: $20.00</strong></span>
+    <button>Agregar al carrito</button>
+</div>
+        <div class="producto">
+    <h3>Manzana Red Delicious (1 kg)</h3>
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDmdrxJBgaHi20ReSza2uq5rKU3zsrPNac0CatMT99WEyNs7hh9kIfU_oZ&s=10" alt="Manzana">
+    <p>Manzana roja fresca, crujiente y de sabor dulce.</p>
+    <span><strong>Precio: $48.00</strong></span>
+    <button>Agregar al carrito</button>
+</div>
+        <div class="producto">
+    <h3>Jitomate Saladette (1 kg)</h3>
+    <img src="https://arteli.vtexassets.com/arquivos/ids/251508-800-auto?v=638635788931930000&width=800&height=auto&aspect=true" alt="Jitomate">
+    <p>Jitomate rojo fresco de primera calidad, básico para la cocina mexicana.</p>
+    <span><strong>Precio: $32.00</strong></span>
+    <button>Agregar al carrito</button>
+    </div>
+
+</section>
+
+
+<section class="Categorias" id="Categorias">
+   <div class="categoria">
+    <h3>Lacteos</h3>
+   </div>
+   <div class="categoria">
+    <h3>Carniceria</h3>
+    </div>
+    <div class="categoria">
+    <h3>Frutas y Verduras</h3>
+    </div>
+    <div class="categoria">
+    <h3>Panaderia</h3>
+    </div>
+    <div class="categoria">
+    <h3>Bebidas</h3>
+    </div>
+    <div class="categoria">
+    <h3>Limpieza</h3> 
+    </div>
+
+</section>
+
+<section class="Ofertas" id="Ofertas">
+  <div class="ofertas">
+    <h3>Leche a <strong>20% de descuento</strong></h3>
+    <p>Precio Regular: <s>$26.50</s> Precio Actual: <strong>$21.20</strong></p>
+    <button>Comprar Ahora</button>
+  </div>
+  
+  <div class="ofertas">
+    <h3>Jitomate Saladette <strong>15% de descuento</strong></h3>
+    <p>Precio Regular: <s>$32.00</s> Precio Actual: <strong>$27.20</strong></p>
+    <button>Comprar Ahora</button>
+  </div>
+</section>
+
+<section id="Contactos">  
+  <h3>INFORMACION DE CONTACTO</h3>
+  <p><strong>Direccion:</strong> Pedro de Alba s/n, Ciudad Universitaria, C.P. 66455, en San Nicolás de los Garza, Nuevo León, México.</p>
+  <p><strong>Telefono de contacto:</strong> 8118532335</p>
+  <p><strong>Email:</strong> <a href="mailto:gael.martinezcr@uanl.edu.mx">gael.martinezcr@uanl.edu.mx</a></p>
+  <p><strong>Horario de atención:</strong> Lunes a viernes, 9:00 AM - 6:00 PM</p>
+
+
+
+<h3>Formulario de Contacto</h3>
+<form action="mailto:gael.martinezcr@uanl.edu.mx" method="post" enctype="text/plain">
+  Ingrese su nombre: 
+  <input type="text" name="nombre" size="20">
+  <br>
+  Ingrese su correo electrónico: 
+  <input type="text" name="correo" size="30">
+  <br>
+  Mensaje:
+  <br>
+  <textarea rows="5" cols="40" name="problema"></textarea>
+  <br>
+  <input type="submit" value="enviar">
+  <input type="reset" value="borrar">
+</form>
+
+</section>
+
+</body>
+</html>

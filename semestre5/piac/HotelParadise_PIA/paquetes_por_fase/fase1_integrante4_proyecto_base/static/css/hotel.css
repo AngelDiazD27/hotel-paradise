@@ -1,0 +1,332 @@
+/* ==========================================================================
+   Hotel Paradise - Hoja de estilos propia (Integrante 4)
+   Se carga DESPUÉS de Bootstrap 5 para ajustar colores y tipografía.
+   ========================================================================== */
+
+/* --- Tipografías locales (no dependen de internet) ----------------------- */
+@font-face {
+  font-family: "Fraunces";
+  src: url("../vendor/fonts/fraunces-latin-wght-normal.woff2") format("woff2");
+  font-weight: 300 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Figtree";
+  src: url("../vendor/fonts/figtree-latin-wght-normal.woff2") format("woff2");
+  font-weight: 300 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Figtree";
+  src: url("../vendor/fonts/figtree-latin-ext-wght-normal.woff2") format("woff2");
+  font-weight: 300 900;
+  unicode-range: U+0100-024F;
+  font-display: swap;
+}
+
+/* --- Paleta ---------------------------------------------------------------
+   Índigo profundo para la estructura, verde laguna para "libre",
+   ámbar para "pendiente / ocupada" y coral para "cancelada".            */
+:root {
+  --hp-indigo-900: #1b1846;
+  --hp-indigo-800: #26215f;
+  --hp-indigo-600: #4338ca;
+  --hp-indigo-100: #e7e6fb;
+  --hp-laguna: #0d8f82;
+  --hp-laguna-claro: #d9f2ee;
+  --hp-ambar: #b9770e;
+  --hp-ambar-claro: #fbefd9;
+  --hp-coral: #c2414b;
+  --hp-coral-claro: #f9e1e3;
+  --hp-fondo: #f3f4f9;
+  --hp-tinta: #1d2033;
+  --hp-gris: #646a82;
+  --hp-borde: #dfe1ec;
+
+  --bs-primary: var(--hp-indigo-600);
+  --bs-primary-rgb: 67, 56, 202;
+  --bs-body-font-family: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --bs-body-color: var(--hp-tinta);
+  --bs-body-bg: var(--hp-fondo);
+  --bs-border-color: var(--hp-borde);
+  --bs-link-color: var(--hp-indigo-600);
+  --bs-link-color-rgb: 67, 56, 202;
+  --bs-success: var(--hp-laguna);
+  --bs-success-rgb: 13, 143, 130;
+  --bs-danger: var(--hp-coral);
+  --bs-danger-rgb: 194, 65, 75;
+  --bs-warning-rgb: 185, 119, 14;
+}
+
+body { font-size: 0.97rem; }
+
+h1, h2, h3, .display-hotel {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+h1 { font-size: 1.85rem; }
+h2 { font-size: 1.35rem; }
+h3 { font-size: 1.1rem; }
+
+/* --- Botones con la paleta propia --------------------------------------- */
+.btn-primary {
+  --bs-btn-bg: var(--hp-indigo-600);
+  --bs-btn-border-color: var(--hp-indigo-600);
+  --bs-btn-hover-bg: var(--hp-indigo-800);
+  --bs-btn-hover-border-color: var(--hp-indigo-800);
+  --bs-btn-active-bg: var(--hp-indigo-900);
+}
+.btn-outline-primary {
+  --bs-btn-color: var(--hp-indigo-600);
+  --bs-btn-border-color: var(--hp-indigo-600);
+  --bs-btn-hover-bg: var(--hp-indigo-600);
+  --bs-btn-hover-border-color: var(--hp-indigo-600);
+}
+.btn-success { --bs-btn-bg: var(--hp-laguna); --bs-btn-border-color: var(--hp-laguna); --bs-btn-hover-bg: #0a7268; }
+.btn-danger { --bs-btn-bg: var(--hp-coral); --bs-btn-border-color: var(--hp-coral); --bs-btn-hover-bg: #a2333c; }
+:focus-visible { outline: 3px solid #8b84f0; outline-offset: 2px; }
+
+/* --- Estructura: barra lateral + contenido ------------------------------ */
+.hp-shell { min-height: 100vh; }
+
+.hp-sidebar {
+  /* !important porque .offcanvas-lg de Bootstrap pone el fondo transparente en pantallas grandes */
+  background: var(--hp-indigo-900) !important;
+  color: #cfcdf3;
+  width: 250px;
+  flex-shrink: 0;
+}
+.hp-brand {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: #fff;
+  text-decoration: none;
+  line-height: 1.1;
+}
+.hp-brand small {
+  display: block;
+  font-family: "Figtree", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: #a9a5e6;
+  margin-top: 0.2rem;
+}
+.hp-nav .nav-link {
+  color: #cfcdf3;
+  border-radius: 0.45rem;
+  padding: 0.55rem 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.hp-nav .nav-link i { font-size: 1.05rem; opacity: 0.85; }
+.hp-nav .nav-link:hover { background: var(--hp-indigo-800); color: #fff; }
+.hp-nav .nav-link.active { background: #fff; color: var(--hp-indigo-900); font-weight: 600; }
+.hp-nav-grupo {
+  font-size: 0.78rem;
+  color: #8783c9;
+  margin: 1.1rem 0 0.35rem 0.8rem;
+}
+
+.hp-topbar {
+  background: #fff;
+  border-bottom: 1px solid var(--hp-borde);
+}
+.hp-usuario-rol { font-size: 0.8rem; color: var(--hp-gris); }
+
+/* En pantallas chicas la barra lateral se vuelve un menú desplegable (offcanvas). */
+@media (max-width: 991.98px) {
+  .hp-sidebar.offcanvas-lg { width: 260px; background: var(--hp-indigo-900); }
+}
+
+/* --- Superficies -------------------------------------------------------- */
+.hp-panel {
+  background: #fff;
+  border: 1px solid var(--hp-borde);
+  border-radius: 0.6rem;
+}
+.hp-panel-cabecera {
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--hp-borde);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.hp-panel-cuerpo { padding: 1.1rem; }
+
+.hp-encabezado-pagina { margin-bottom: 1.4rem; }
+.hp-encabezado-pagina p { color: var(--hp-gris); margin: 0.2rem 0 0; }
+
+/* --- Indicadores del dashboard (franja, no tarjetas sueltas) ------------- */
+.hp-indicadores {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.45fr);
+  background: #fff;
+  border: 1px solid var(--hp-borde);
+  border-radius: 0.6rem;
+}
+.hp-indicador { padding: 1rem 1.2rem; border-left: 1px solid var(--hp-borde); }
+.hp-indicador:first-child { border-left: 0; }
+.hp-indicador-etiqueta { color: var(--hp-gris); font-size: 0.85rem; display: flex; gap: 0.45rem; align-items: center; }
+.hp-indicador-valor {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.9rem;
+  font-weight: 600;
+  line-height: 1.15;
+  margin-top: 0.25rem;
+  font-variant-numeric: tabular-nums;
+}
+.hp-indicador-nota { font-size: 0.8rem; color: var(--hp-gris); }
+.hp-indicador-ingresos { background: var(--hp-indigo-900); color: #fff; border-radius: 0 0.6rem 0.6rem 0; }
+.hp-indicador-ingresos .hp-indicador-etiqueta,
+.hp-indicador-ingresos .hp-indicador-nota { color: #b9b6ee; }
+@media (max-width: 1199.98px) {
+  .hp-indicadores { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hp-indicador { border-left: 0; border-top: 1px solid var(--hp-borde); }
+  .hp-indicador:first-child { border-top: 0; }
+  .hp-indicador-ingresos { grid-column: 1 / -1; border-radius: 0 0 0.6rem 0.6rem; }
+}
+
+/* --- Tablero de habitaciones (lo más característico del sistema) -------- */
+.hp-tablero {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 0.55rem;
+}
+.hp-cuarto {
+  display: block;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  padding: 0.6rem 0.7rem 0.55rem;
+  border: 1px solid transparent;
+  transition: transform 0.12s ease;
+}
+.hp-cuarto:hover { transform: translateY(-2px); }
+.hp-cuarto-numero {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 600;
+  line-height: 1;
+}
+.hp-cuarto-tipo { font-size: 0.75rem; margin-top: 0.3rem; }
+.hp-cuarto.libre { background: var(--hp-laguna-claro); color: #075e56; border-color: #b4e3db; }
+.hp-cuarto.ocupada { background: var(--hp-indigo-800); color: #fff; }
+.hp-cuarto.ocupada .hp-cuarto-tipo { color: #c9c6f5; }
+.hp-cuarto.fuera {
+  background: repeating-linear-gradient(135deg, #eceef4, #eceef4 6px, #e2e4ec 6px, #e2e4ec 12px);
+  color: #737892;
+  border-color: var(--hp-borde);
+}
+.hp-leyenda { display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.82rem; color: var(--hp-gris); }
+.hp-leyenda span::before {
+  content: "";
+  display: inline-block;
+  width: 0.75rem; height: 0.75rem;
+  border-radius: 0.2rem;
+  margin-right: 0.35rem;
+  vertical-align: -1px;
+}
+.hp-leyenda .l-libre::before { background: var(--hp-laguna-claro); border: 1px solid #b4e3db; }
+.hp-leyenda .l-ocupada::before { background: var(--hp-indigo-800); }
+.hp-leyenda .l-fuera::before { background: #e2e4ec; border: 1px solid var(--hp-borde); }
+
+/* --- Etiquetas de estado ------------------------------------------------- */
+.hp-estado {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.18rem 0.55rem;
+  border-radius: 1rem;
+  white-space: nowrap;
+}
+.hp-estado-CONFIRMADA, .hp-estado-libre { background: var(--hp-laguna-claro); color: #075e56; }
+.hp-estado-PENDIENTE { background: var(--hp-ambar-claro); color: #8a5806; }
+.hp-estado-FINALIZADA { background: var(--hp-indigo-100); color: var(--hp-indigo-800); }
+.hp-estado-CANCELADA, .hp-estado-fuera { background: var(--hp-coral-claro); color: #96303a; }
+.hp-estado-ocupada { background: var(--hp-indigo-800); color: #fff; }
+
+/* --- Tablas -------------------------------------------------------------- */
+.table { --bs-table-bg: transparent; margin-bottom: 0; }
+.table > thead th {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--hp-gris);
+  background: #f8f8fc;
+  border-bottom-width: 1px;
+}
+.table td, .table th { vertical-align: middle; padding: 0.65rem 0.9rem; }
+.num { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+
+/* --- Tarjetas de habitación --------------------------------------------- */
+.hp-foto {
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  width: 100%;
+  background: var(--hp-indigo-100);
+  border-radius: 0.6rem 0.6rem 0 0;
+}
+.hp-foto-vacia {
+  display: flex; align-items: center; justify-content: center;
+  color: var(--hp-indigo-600); font-size: 2.2rem;
+}
+.hp-precio { font-family: "Fraunces", Georgia, serif; font-size: 1.25rem; font-weight: 600; }
+
+/* --- Login --------------------------------------------------------------- */
+.hp-login {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+}
+.hp-login-arte {
+  background:
+    radial-gradient(circle at 78% 22%, rgba(13, 143, 130, 0.55), transparent 42%),
+    var(--hp-indigo-900);
+  color: #fff;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.hp-login-arte h1 { font-size: 2.9rem; line-height: 1.08; max-width: 15ch; }
+.hp-login-arte p { color: #c9c6f5; max-width: 38ch; }
+.hp-login-form { display: flex; align-items: center; justify-content: center; padding: 2rem; background: #fff; }
+.hp-login-form form { width: 100%; max-width: 360px; }
+@media (max-width: 767.98px) {
+  .hp-login { grid-template-columns: 1fr; }
+  .hp-login-arte { padding: 2rem; min-height: 220px; }
+  .hp-login-arte h1 { font-size: 2.2rem; }
+}
+
+/* --- Componentes de Bootstrap con la paleta propia ---------------------- */
+.pagination {
+  --bs-pagination-color: var(--hp-indigo-600);
+  --bs-pagination-active-bg: var(--hp-indigo-600);
+  --bs-pagination-active-border-color: var(--hp-indigo-600);
+  --bs-pagination-hover-color: var(--hp-indigo-800);
+}
+.progress { --bs-progress-bar-bg: var(--hp-indigo-600); background: var(--hp-indigo-100); }
+.alert-info { --bs-alert-bg: var(--hp-indigo-100); --bs-alert-color: var(--hp-indigo-800); --bs-alert-border-color: #cfccf6; }
+.alert-success { --bs-alert-bg: var(--hp-laguna-claro); --bs-alert-color: #075e56; --bs-alert-border-color: #b4e3db; }
+.alert-danger { --bs-alert-bg: var(--hp-coral-claro); --bs-alert-color: #8a2a33; --bs-alert-border-color: #f0c3c7; }
+.alert-warning { --bs-alert-bg: var(--hp-ambar-claro); --bs-alert-color: #7a4f05; --bs-alert-border-color: #f1d9a8; }
+.form-control:focus, .form-select:focus { border-color: #8b84f0; box-shadow: 0 0 0 0.2rem rgba(67, 56, 202, 0.18); }
+.form-check-input:checked { background-color: var(--hp-indigo-600); border-color: var(--hp-indigo-600); }
+
+/* --- Varios -------------------------------------------------------------- */
+.hp-vacio { text-align: center; padding: 2.5rem 1rem; color: var(--hp-gris); }
+.hp-vacio i { font-size: 2rem; display: block; margin-bottom: 0.5rem; color: var(--hp-indigo-600); }
+.hp-total-estimado { background: var(--hp-indigo-100); border-radius: 0.5rem; padding: 0.8rem 1rem; }
+.hp-total-estimado strong { font-family: "Fraunces", Georgia, serif; font-size: 1.4rem; }
+.form-label { font-weight: 500; font-size: 0.9rem; }
+.errorlist { list-style: none; padding: 0; margin: 0.25rem 0 0; color: var(--hp-coral); font-size: 0.85rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+@media print {
+  .hp-sidebar, .hp-topbar, .no-print { display: none !important; }
+  .hp-panel { border: 0; }
+}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block titulo %}Clientes{% endblock %}
+{% block contenido %}
+<div class="hp-encabezado-pagina d-flex flex-wrap justify-content-between align-items-end gap-2">
+  <div>
+    <h1>Clientes</h1>
+    <p>{{ page_obj.paginator.count }} cliente{{ page_obj.paginator.count|pluralize }} registrado{{ page_obj.paginator.count|pluralize }}{% if form.q.value %} que coinciden con "{{ form.q.value }}"{% endif %}.</p>
+  </div>
+  {% if perms.clientes.add_cliente %}
+    <a href="{% url 'clientes:crear' %}" class="btn btn-primary"><i class="bi bi-person-plus"></i> Nuevo cliente</a>
+  {% endif %}
+</div>
+
+<form method="get" class="hp-panel hp-panel-cuerpo mb-3">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-10">{% include "partials/campo.html" with campo=form.q %}</div>
+    <div class="col-md-2 d-flex gap-2">
+      <button class="btn btn-primary flex-grow-1" type="submit"><i class="bi bi-search"></i> Buscar</button>
+      <a class="btn btn-outline-secondary" href="{% url 'clientes:lista' %}" title="Limpiar búsqueda"><i class="bi bi-x-lg"></i></a>
+    </div>
+  </div>
+</form>
+
+<div class="hp-panel">
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead><tr><th>Nombre</th><th>Correo</th><th>Teléfono</th><th>Registro</th><th class="text-end">Acciones</th></tr></thead>
+      <tbody>
+      {% for c in clientes %}
+        <tr>
+          <td><a href="{% url 'clientes:detalle' c.pk %}" class="fw-semibold text-decoration-none">{{ c.apellidos }}, {{ c.nombre }}</a></td>
+          <td>{{ c.correo }}</td>
+          <td>{{ c.telefono }}</td>
+          <td>{{ c.fecha_registro|date:"d/m/Y" }}</td>
+          <td class="text-end text-nowrap">
+            {% if modulos.reservaciones and perms.reservaciones.add_reservacion %}
+              <a href="{% url 'reservaciones:crear' %}?cliente={{ c.pk }}" class="btn btn-sm btn-outline-primary" title="Nueva reservación"><i class="bi bi-calendar-plus"></i></a>
+            {% endif %}
+            {% if perms.clientes.change_cliente %}
+              <a href="{% url 'clientes:editar' c.pk %}" class="btn btn-sm btn-outline-secondary" title="Editar"><i class="bi bi-pencil"></i></a>
+            {% endif %}
+            {% if perms.clientes.delete_cliente %}
+              <a href="{% url 'clientes:eliminar' c.pk %}" class="btn btn-sm btn-outline-danger" title="Eliminar"><i class="bi bi-trash"></i></a>
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5" class="hp-vacio"><i class="bi bi-people"></i>No hay clientes con esos datos.
+          {% if perms.clientes.add_cliente %}<div class="mt-1"><a href="{% url 'clientes:crear' %}">Registrar un cliente nuevo</a></div>{% endif %}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% include "partials/paginacion.html" %}
+{% endblock %}

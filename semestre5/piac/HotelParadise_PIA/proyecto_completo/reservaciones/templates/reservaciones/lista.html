@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block titulo %}Reservaciones{% endblock %}
+{% block contenido %}
+<div class="hp-encabezado-pagina d-flex flex-wrap justify-content-between align-items-end gap-2">
+  <div>
+    <h1>Reservaciones</h1>
+    <p>{{ page_obj.paginator.count }} {{ page_obj.paginator.count|pluralize:"reservación,reservaciones" }} con los filtros actuales.</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'reservaciones:disponibilidad' %}" class="btn btn-outline-primary"><i class="bi bi-calendar-check"></i> Consultar disponibilidad</a>
+    {% if perms.reservaciones.add_reservacion %}
+      <a href="{% url 'reservaciones:crear' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nueva reservación</a>
+    {% endif %}
+  </div>
+</div>
+
+{# Búsqueda por cliente, habitación y tipo de habitación #}
+<form method="get" class="hp-panel hp-panel-cuerpo mb-3">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-4">{% include "partials/campo.html" with campo=form.cliente %}</div>
+    <div class="col-md-2">{% include "partials/campo.html" with campo=form.habitacion %}</div>
+    <div class="col-md-2">{% include "partials/campo.html" with campo=form.tipo %}</div>
+    <div class="col-md-2">{% include "partials/campo.html" with campo=form.estado %}</div>
+    <div class="col-md-2 d-flex gap-2">
+      <button class="btn btn-primary flex-grow-1" type="submit"><i class="bi bi-search"></i> Buscar</button>
+      <a class="btn btn-outline-secondary" href="{% url 'reservaciones:lista' %}" title="Limpiar filtros"><i class="bi bi-x-lg"></i></a>
+    </div>
+  </div>
+</form>
+
+<div class="hp-panel">
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead><tr><th>Folio</th><th>Cliente</th><th>Habitación</th><th>Entrada</th><th>Salida</th><th class="num">Noches</th><th class="num">Total</th><th>Estado</th><th></th></tr></thead>
+      <tbody>
+      {% for r in reservaciones %}
+        <tr>
+          <td><a href="{% url 'reservaciones:detalle' r.pk %}" class="fw-semibold">#{{ r.pk }}</a></td>
+          <td>{{ r.cliente.nombre_completo }}</td>
+          <td>{{ r.habitacion.numero }} <span class="text-secondary">· {{ r.habitacion.get_tipo_display }}</span></td>
+          <td>{{ r.fecha_entrada|date:"d/m/Y" }}</td>
+          <td>{{ r.fecha_salida|date:"d/m/Y" }}</td>
+          <td class="num">{{ r.noches }}</td>
+          <td class="num">${{ r.total|floatformat:"2g" }}</td>
+          <td><span class="hp-estado hp-estado-{{ r.estado }}">{{ r.get_estado_display }}</span></td>
+          <td class="text-end text-nowrap">
+            {% if perms.reservaciones.change_reservacion %}
+              <a href="{% url 'reservaciones:editar' r.pk %}" class="btn btn-sm btn-outline-secondary" title="Modificar"><i class="bi bi-pencil"></i></a>
+              {% if r.puede_cancelarse %}
+                <a href="{% url 'reservaciones:cancelar' r.pk %}" class="btn btn-sm btn-outline-danger" title="Cancelar"><i class="bi bi-x-circle"></i></a>
+              {% endif %}
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="9" class="hp-vacio"><i class="bi bi-journal-x"></i>No hay reservaciones con esos filtros.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% include "partials/paginacion.html" %}
+{% endblock %}

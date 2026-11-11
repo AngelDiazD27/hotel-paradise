@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block titulo %}Habitación {{ habitacion.numero }}{% endblock %}
+{% block contenido %}
+<nav aria-label="breadcrumb"><ol class="breadcrumb small">
+  <li class="breadcrumb-item"><a href="{% url 'habitaciones:lista' %}">Habitaciones</a></li>
+  <li class="breadcrumb-item active">Habitación {{ habitacion.numero }}</li>
+</ol></nav>
+
+<div class="row g-3">
+  <div class="col-lg-5">
+    <div class="hp-panel">
+      {% if habitacion.imagen %}
+        <img src="{{ habitacion.imagen.url }}" alt="Fotografía de la habitación {{ habitacion.numero }}" class="hp-foto">
+      {% else %}
+        <div class="hp-foto hp-foto-vacia"><i class="bi bi-image"></i></div>
+      {% endif %}
+      <div class="hp-panel-cuerpo">
+        <h1 class="mb-0">Habitación {{ habitacion.numero }}</h1>
+        <p class="text-secondary">{{ habitacion.get_tipo_display }}</p>
+        <dl class="row mb-0">
+          <dt class="col-6 fw-normal text-secondary">Precio por noche</dt><dd class="col-6 hp-precio">${{ habitacion.precio_noche|floatformat:"2g" }}</dd>
+          <dt class="col-6 fw-normal text-secondary">Capacidad</dt><dd class="col-6">{{ habitacion.capacidad }} persona{{ habitacion.capacidad|pluralize }}</dd>
+          <dt class="col-6 fw-normal text-secondary">Estado</dt>
+          <dd class="col-6">{% if habitacion.disponible %}<span class="hp-estado hp-estado-libre">En servicio</span>{% else %}<span class="hp-estado hp-estado-fuera">Fuera de servicio</span>{% endif %}</dd>
+          {% if habitacion.descripcion %}
+          <dt class="col-12 fw-normal text-secondary mt-2">Descripción</dt><dd class="col-12">{{ habitacion.descripcion|linebreaksbr }}</dd>
+          {% endif %}
+        </dl>
+        <div class="d-flex flex-wrap gap-2 mt-3">
+          {% if modulos.reservaciones and perms.reservaciones.add_reservacion and habitacion.disponible %}
+            <a href="{% url 'reservaciones:crear' %}?habitacion={{ habitacion.pk }}" class="btn btn-primary"><i class="bi bi-calendar-plus"></i> Reservar</a>
+          {% endif %}
+          {% if perms.habitaciones.change_habitacion %}
+            <a href="{% url 'habitaciones:editar' habitacion.pk %}" class="btn btn-outline-primary"><i class="bi bi-pencil"></i> Editar</a>
+          {% endif %}
+          {% if perms.habitaciones.delete_habitacion %}
+            <a href="{% url 'habitaciones:eliminar' habitacion.pk %}" class="btn btn-outline-danger"><i class="bi bi-trash"></i> Eliminar</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if modulos.reservaciones %}
+  <div class="col-lg-7">
+    <div class="hp-panel">
+      <div class="hp-panel-cabecera"><h2 class="mb-0">Reservaciones activas</h2>
+        <span class="text-secondary small">Pendientes o confirmadas que aún no terminan</span></div>
+      <div class="table-responsive">
+        <table class="table">
+          <thead><tr><th>Folio</th><th>Cliente</th><th>Entrada</th><th>Salida</th><th>Estado</th></tr></thead>
+          <tbody>
+          {% for r in reservaciones_activas %}
+            <tr>
+              <td><a href="{% url 'reservaciones:detalle' r.pk %}">#{{ r.pk }}</a></td>
+              <td>{{ r.cliente }}</td>
+              <td>{{ r.fecha_entrada|date:"d/m/Y" }}</td>
+              <td>{{ r.fecha_salida|date:"d/m/Y" }}</td>
+              <td><span class="hp-estado hp-estado-{{ r.estado }}">{{ r.get_estado_display }}</span></td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="5" class="hp-vacio">Sin reservaciones activas. La habitación se puede eliminar o editar libremente.</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

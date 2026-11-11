@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block titulo %}{% if usuario %}Editar usuario{% else %}Nuevo usuario{% endif %}{% endblock %}
+{% block contenido %}
+<div class="hp-encabezado-pagina">
+  <h1>{% if usuario %}Editar a {{ usuario.username }}{% else %}Nuevo usuario{% endif %}</h1>
+  <p>{% if usuario %}Cambia sus datos, su rol o desactiva la cuenta.{% else %}Crea una cuenta para alguien del personal y asígnale un rol.{% endif %}</p>
+</div>
+<div class="hp-panel" style="max-width:760px">
+  <form method="post" class="hp-panel-cuerpo" novalidate>
+    {% csrf_token %}
+    {% include "partials/errores_formulario.html" %}
+    <div class="row g-3">
+      {% for campo in form %}
+        <div class="col-md-6">
+          {% include "partials/campo.html" %}
+        </div>
+      {% endfor %}
+    </div>
+    <div class="d-flex gap-2 mt-4">
+      <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Guardar usuario</button>
+      <a href="{% url 'cuentas:usuarios' %}" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

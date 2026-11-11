@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<HTML>
+    <head>
+        <title>Evidencia 2</title>
+        <meta charset="UTF-8">
+
+        <style>
+            body {background: linear-gradient(#8dbbd1, #102f5e); 
+                  background-size: cover;
+                  background-position: center;
+                  background-repeat: no-repeat;
+                  background-attachment: fixed;
+                }
+            h1 {
+                color: rgb(242, 246, 247);
+                font-size: 60px;
+                text-align: center;
+                font-family: monospace, monaco ;
+                font-style: oblique
+                }
+            #btnMenu{
+                background-color: rgba(108, 57, 190, 0.562);
+                color:antiquewhite;
+                font-size: 20px;
+                padding: 15px 30px;
+                border-radius: 15px;
+                border: none;
+                display: block;
+                margin: auto;
+            }
+            button{
+                background-color: rgb(133, 115, 233);
+                color:antiquewhite;
+                border: none;
+                padding: 10px 20px;
+                margin: 5px;
+                border-radius: 10px;
+                cursor: pointer;
+                font-size: 18;
+                margin: auto;
+            }
+            img{
+                height: 300px;           
+                border-radius: 8px;      
+                margin: 20px auto; 
+            }
+            .texto{
+                color: rgb(242, 246, 247);
+                font-size: 20px;
+                text-align: center;
+                font-family: monospace, monaco ;
+                font-style: oblique
+            }
+            
+        </style>
+    </head>
+    <body>
+    
+    <h1>Página Interactiva</h1>
+    
+    <div id="opciones" style="display:none; margin-top:10px;">
+        <button onclick = "mensaje_random()">Mensaje aleatorio</button>
+        <button onclick="verpromocion()">Promoción</button>
+        <button onclick="CantidadCaracteres()">Cantidad de caracteres</button>
+        <button onclick="imprimir()">Imprimir Pagina</button>
+        <button onclick="hora()">La hora</button>
+        <button onclick="Num_random()">Numero random</button>
+        <button id="btnContra" onclick="MostrarOcultarContra()">MostrarContraseña</button>
+        <button onclick="mostrarimagen()">Mostrar imagen</button>
+        <button id="btnRotar" onclick = "rotarImagen()" style="display:none;">Rotar imagen</button>
+    </div>
+
+    <p id="Mensaje" class="texto"></p>
+    <p id="promocion" class="texto"></p>
+    <p id="hora" class="texto"></p>
+    <p id="caracteres" class="texto"></p>
+
+
+    <script>
+        function menu(){
+            let elemento = document.getElementById("opciones")
+            if (elemento.style.display === "none") {
+            elemento.style.display = "block";
+            } else {
+                elemento.style.display = "none";
+            }
+        }
+    </script>
+    <button id="btnMenu" onclick="menu()">Menú</button>
+
+
+    <p id="promocion"></p>
+    <script>
+        function verpromocion() {
+            let promo = document.getElementById("promocion")
+            if (promo.textContent === ""){
+                promo.textContent =
+                "¡¡Promoción!! Obtén el 15% de descuento.";
+            } else {
+                promo.textContent = "";
+            }
+        } 
+    </script>
+    
+
+    <p id="Mensaje"></p>
+    <script>
+        function mensaje_random(){
+            let mensajes = [
+            "Hola mucho gusto :D",
+            "Hoy es un excelente día para empezar algo que llevas postergando.",
+            "Un dato curioso: las pulpos tienen tres corazones y sangre azul.",
+            "El secreto de avanzar es comenzar.",
+            "Si buscas una señal para tomarte un descanso... es esta.",
+            "Todo lo que necesitas para tener éxito ya está dentro de ti.",
+            "La creatividad es la inteligencia divirtiéndose.",
+            "Un café (o un té) a tiempo lo arregla casi todo.",
+            "No te preocupes por cometer errores; preocúpate si no estás aprendiendo de ellos.",
+            "Hoy estás un paso más cerca de tus metas que ayer.",
+            "La mejor forma de predecir el futuro es creándolo.",
+            "Haz una pausa, respira profundo y continúa.",
+            "A veces, las mejores ideas surgen en los momentos menos esperados.",
+            "Sonríe, nunca sabes quién necesita contagiarse de tu buena energía hoy.",
+            "La simplicidad es la máxima sofisticación.",
+            "El éxito no es la clave de la felicidad; la felicidad es la clave del éxito.",
+            "¿Sabías que los flamencos son rosados por los camarones que comen?",
+            "Pequeños pasos diarios generan grandes resultados a largo plazo.",
+            "Confía en el proceso, incluso cuando parezca lento.",
+            "Todo parece imposible hasta que se hace.",
+            "Hoy es un buen día para aprender algo completamente nuevo.",
+            "La paciencia no es la habilidad de esperar, sino de mantener una buena actitud mientras esperas.",
+            "Un día a la vez, una tarea a la vez.",
+            "La suerte favorece a la mente preparada.",
+            "Haz hoy algo por lo que tu yo del futuro te dé las gracias.",
+            ];
+            let numero = Math.floor(Math.random()*mensajes.length);
+            document.getElementById("Mensaje").textContent = mensajes[numero];
+        }
+    </script>
+
+
+    <br></br>
+    <input
+        type="text"
+        id="palabra"
+        placeholder="Escribe un mensaje y presiona enter"
+        style="display: none;">
+    <p id="caracteres"></p>
+    <script>
+        function CantidadCaracteres (){
+            let input = document.getElementById("palabra");
+            let resultado = document.getElementById("caracteres");
+            if (input.style.display === "none"){
+            input.style.display = "block";
+            input.focus();
+        } else {
+            input.style.display = "none";
+            resultado.textContent = "";
+            input.value = ""; } }
+        document.getElementById("palabra").addEventListener("keydown", function(event)
+        { 
+            if (event.key === "Enter"){
+                let texto = this.value;
+                document.getElementById("caracteres").textContent = 
+                "Número de caracteres: " + texto.length; }
+            });
+    </script>
+
+
+    <p id="imprimir"></p>
+    <script>
+    function imprimir (){
+                window.print()
+            }
+    </script>
+
+
+    <p id="hora"></p>
+    <script>
+        function hora(){
+            let horatexto = document.getElementById("hora");
+            if (horatexto.textContent === ""){
+            tiempo = new Date();
+            horatexto.textContent=
+            (tiempo.getHours()+":"+
+            tiempo.getMinutes());
+        } else {
+            horatexto.textContent = "";
+        }}
+    </script>
+
+
+    <p id="Num"></p>
+    <script>
+        function Num_random(){
+        let num = Math.floor(Math.random()*100) + 1;
+        document.getElementById("Num").textContent = num;
+        }
+    </script>
+
+
+    <input
+        type = "password"
+        id = "contraseña"
+        placeholder = "ingresa tu contraseña" >
+    <script>
+        function MostrarOcultarContra(){
+            let password = document.getElementById("contraseña");
+            let boton = document.getElementById("btnContra")
+            if(password.type === "password"){
+                password.type = "text";
+                boton.textContent = "Ocultar Contraseña"
+            } else {
+                password.type = "password";
+                boton.textContent = "Mostrar contraseña";
+            }
+        }
+    </script>
+    
+
+    <img
+        id="imagen"
+        src="https://i.pinimg.com/736x/b0/13/37/b013377cf2ac3efbb22a33f3d8c377ef.jpg" 
+        style="display:none; transition: 0.5s;">
+    <script>
+        function mostrarimagen(){
+            let imagen = document.getElementById("imagen");
+            let botonRotar = document.getElementById("btnRotar");
+
+            if (imagen.style.display === "none"){
+                imagen.style.display = "block";
+                botonRotar.style.display = "inline-block";
+            } else {
+                imagen.style.display = "none";
+                botonRotar.style.display = "none";
+            }
+        }
+    </script>
+
+
+    <script>
+        let grados = 0;
+        function rotarImagen(){
+            let imagen = document.getElementById("imagen");
+            grados += 90;
+            imagen.style.transform = "rotate(" + grados + "deg)";
+        }
+    </script>
+
+    </body>
+</HTML>

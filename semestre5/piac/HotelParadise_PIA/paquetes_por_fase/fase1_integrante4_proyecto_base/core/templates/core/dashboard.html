@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block titulo %}Inicio{% endblock %}
+{% block contenido %}
+<div class="hp-encabezado-pagina">
+  <h1>Hotel Paradise</h1>
+  <p>Proyecto base listo. Cada módulo aparece aquí (y en el menú) en cuanto su integrante lo agrega a INSTALLED_APPS.</p>
+</div>
+
+<div class="hp-panel" style="max-width:720px">
+  <div class="hp-panel-cabecera"><h2 class="mb-0">Avance del equipo</h2></div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item d-flex justify-content-between"><span>Interfaz web y proyecto base · Integrante 4</span><span class="hp-estado hp-estado-libre">Listo</span></li>
+    <li class="list-group-item d-flex justify-content-between"><span>Login y usuarios · Integrante 5</span>{% if modulos.cuentas %}<span class="hp-estado hp-estado-libre">Listo</span>{% else %}<span class="hp-estado hp-estado-PENDIENTE">Pendiente</span>{% endif %}</li>
+    <li class="list-group-item d-flex justify-content-between"><span>Habitaciones · Integrante 1</span>{% if modulos.habitaciones %}<span class="hp-estado hp-estado-libre">Listo</span>{% else %}<span class="hp-estado hp-estado-PENDIENTE">Pendiente</span>{% endif %}</li>
+    <li class="list-group-item d-flex justify-content-between"><span>Clientes · Integrante 2</span>{% if modulos.clientes %}<span class="hp-estado hp-estado-libre">Listo</span>{% else %}<span class="hp-estado hp-estado-PENDIENTE">Pendiente</span>{% endif %}</li>
+    <li class="list-group-item d-flex justify-content-between"><span>Reservaciones · Integrante 3</span>{% if modulos.reservaciones %}<span class="hp-estado hp-estado-libre">Listo</span>{% else %}<span class="hp-estado hp-estado-PENDIENTE">Pendiente</span>{% endif %}</li>
+    <li class="list-group-item d-flex justify-content-between"><span>Reportes · Integrante 5</span>{% if modulos.reportes %}<span class="hp-estado hp-estado-libre">Listo</span>{% else %}<span class="hp-estado hp-estado-PENDIENTE">Pendiente</span>{% endif %}</li>
+  </ul>
+</div>
+{% endblock %}

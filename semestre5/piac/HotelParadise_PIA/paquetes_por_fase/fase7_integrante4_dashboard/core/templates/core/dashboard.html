@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% load static %}
+{% block titulo %}Dashboard{% endblock %}
+{% block contenido %}
+<div class="hp-encabezado-pagina d-flex flex-wrap justify-content-between align-items-end gap-2">
+  <div>
+    <h1>Hoy en Hotel Paradise</h1>
+    <p>{{ hoy|date:"l j \d\e F \d\e Y"|capfirst }} · {{ habitaciones_ocupadas }} ocupada{{ habitaciones_ocupadas|pluralize }}, {{ llegadas|length }} llegada{{ llegadas|length|pluralize }} y {{ salidas|length }} salida{{ salidas|length|pluralize }}.</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'reservaciones:disponibilidad' %}" class="btn btn-outline-primary"><i class="bi bi-calendar-check"></i> Disponibilidad</a>
+    {% if perms.reservaciones.add_reservacion %}
+    <a href="{% url 'reservaciones:crear' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nueva reservación</a>
+    {% endif %}
+  </div>
+</div>
+
+{# Los 5 indicadores que pide el PIA #}
+<section class="hp-indicadores mb-4" aria-label="Indicadores principales">
+  <div class="hp-indicador">
+    <div class="hp-indicador-etiqueta"><i class="bi bi-people"></i> Total de clientes</div>
+    <div class="hp-indicador-valor">{{ total_clientes }}</div>
+    <div class="hp-indicador-nota">registrados</div>
+  </div>
+  <div class="hp-indicador">
+    <div class="hp-indicador-etiqueta"><i class="bi bi-door-closed"></i> Total de habitaciones</div>
+    <div class="hp-indicador-valor">{{ total_habitaciones }}</div>
+    <div class="hp-indicador-nota">{{ fuera_servicio }} fuera de servicio</div>
+  </div>
+  <div class="hp-indicador">
+    <div class="hp-indicador-etiqueta"><i class="bi bi-journal-bookmark"></i> Total de reservaciones</div>
+    <div class="hp-indicador-valor">{{ total_reservaciones }}</div>
+    <div class="hp-indicador-nota">{{ reservaciones_activas }} activa{{ reservaciones_activas|pluralize }}</div>
+  </div>
+  <div class="hp-indicador">
+    <div class="hp-indicador-etiqueta"><i class="bi bi-check2-circle"></i> Habitaciones disponibles</div>
+    <div class="hp-indicador-valor">{{ habitaciones_disponibles }}</div>
+    <div class="hp-indicador-nota">libres hoy</div>
+  </div>
+  <div class="hp-indicador hp-indicador-ingresos">
+    <div class="hp-indicador-etiqueta"><i class="bi bi-cash-stack"></i> Ingresos generados</div>
+    <div class="hp-indicador-valor">${{ ingresos|floatformat:"0g" }}</div>
+    <div class="hp-indicador-nota">reservaciones confirmadas y finalizadas</div>
+  </div>
+</section>
+
+<div class="row g-3">
+  <div class="col-xl-8 d-flex flex-column gap-3">
+    {# Tablero de habitaciones: el estado de cada cuarto hoy #}
+    <section class="hp-panel">
+      <div class="hp-panel-cabecera">
+        <h2 class="mb-0">Tablero de habitaciones</h2>
+        <div class="hp-leyenda"><span class="l-libre">Libre</span><span class="l-ocupada">Ocupada</span><span class="l-fuera">Fuera de servicio</span></div>
+      </div>
+      <div class="hp-panel-cuerpo">
+        <div class="hp-tablero">
+          {% for c in tablero %}
+            <a href="{% url 'habitaciones:detalle' c.habitacion.pk %}" class="hp-cuarto {{ c.estado }}"
+               title="Habitación {{ c.habitacion.numero }}: {% if c.estado == 'libre' %}libre{% elif c.estado == 'ocupada' %}ocupada{% else %}fuera de servicio{% endif %}">
+              <div class="hp-cuarto-numero">{{ c.habitacion.numero }}</div>
+              <div class="hp-cuarto-tipo">{{ c.habitacion.get_tipo_display }}</div>
+            </a>
+          {% empty %}
+            <div class="hp-vacio">Aún no hay habitaciones. {% if perms.habitaciones.add_habitacion %}<a href="{% url 'habitaciones:crear' %}">Registra la primera</a>.{% endif %}</div>
+          {% endfor %}
+        </div>
+        {% if ocupacion_tipo %}
+        <div class="row g-3 mt-2">
+          {% for t in ocupacion_tipo %}
+            <div class="col-6 col-md-3">
+              <div class="small text-secondary">{{ t.tipo }}</div>
+              <div class="fw-semibold">{{ t.ocupadas }} de {{ t.total }} ocupadas</div>
+              <div class="progress mt-1" role="progressbar" aria-label="Ocupación {{ t.tipo }}" aria-valuenow="{{ t.porcentaje }}" aria-valuemin="0" aria-valuemax="100" style="height:6px">
+                <div class="progress-bar" style="width: {{ t.porcentaje }}%"></div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </section>
+
+    <section class="hp-panel">
+      <div class="hp-panel-cabecera"><h2 class="mb-0">Últimas reservaciones registradas</h2><a href="{% url 'reservaciones:lista' %}" class="small">Ver todas</a></div>
+      <div class="table-responsive">
+        <table class="table">
+          <thead><tr><th>Folio</th><th>Cliente</th><th>Hab.</th><th>Entrada</th><th class="num">Total</th><th>Estado</th></tr></thead>
+          <tbody>
+          {% for r in ultimas %}
+            <tr>
+              <td><a href="{{ r.get_absolute_url }}">#{{ r.pk }}</a></td>
+              <td>{{ r.cliente.nombre_completo }}</td>
+              <td>{{ r.habitacion.numero }}</td>
+              <td>{{ r.fecha_entrada|date:"d/m/Y" }}</td>
+              <td class="num">${{ r.total|floatformat:"2g" }}</td>
+              <td><span class="hp-estado hp-estado-{{ r.estado }}">{{ r.get_estado_display }}</span></td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="6" class="hp-vacio">Todavía no hay reservaciones.</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="hp-panel">
+      <div class="hp-panel-cabecera"><h2 class="mb-0">Ingresos de los últimos 6 meses</h2></div>
+      <div class="hp-panel-cuerpo"><canvas id="graficaIngresos" height="110" aria-label="Gráfica de ingresos por mes" role="img"></canvas></div>
+    </section>
+  </div>
+
+  <div class="col-xl-4 d-flex flex-column gap-3">
+    <section class="hp-panel">
+      <div class="hp-panel-cabecera"><h2 class="mb-0">Llegadas de hoy</h2><span class="text-secondary small">{{ llegadas|length }}</span></div>
+      <ul class="list-group list-group-flush">
+        {% for r in llegadas %}
+          <li class="list-group-item d-flex justify-content-between"><a href="{{ r.get_absolute_url }}">{{ r.cliente.nombre_completo }}</a><span>Hab. {{ r.habitacion.numero }}</span></li>
+        {% empty %}
+          <li class="list-group-item text-secondary">Nadie llega hoy.</li>
+        {% endfor %}
+      </ul>
+    </section>
+    <section class="hp-panel">
+      <div class="hp-panel-cabecera"><h2 class="mb-0">Salidas de hoy</h2><span class="text-secondary small">{{ salidas|length }}</span></div>
+      <ul class="list-group list-group-flush">
+        {% for r in salidas %}
+          <li class="list-group-item d-flex justify-content-between"><a href="{{ r.get_absolute_url }}">{{ r.cliente.nombre_completo }}</a><span>Hab. {{ r.habitacion.numero }}</span></li>
+        {% empty %}
+          <li class="list-group-item text-secondary">Nadie sale hoy.</li>
+        {% endfor %}
+      </ul>
+    </section>
+    <section class="hp-panel">
+      <div class="hp-panel-cabecera"><h2 class="mb-0">Próximos 7 días</h2></div>
+      <ul class="list-group list-group-flush">
+        {% for r in proximas %}
+          <li class="list-group-item d-flex justify-content-between gap-2"><span><a href="{{ r.get_absolute_url }}">{{ r.cliente.nombre_completo }}</a><br><span class="small text-secondary">{{ r.fecha_entrada|date:"D d/m" }} · Hab. {{ r.habitacion.numero }}</span></span><span class="hp-estado hp-estado-{{ r.estado }} align-self-center">{{ r.get_estado_display }}</span></li>
+        {% empty %}
+          <li class="list-group-item text-secondary">Sin llegadas en la próxima semana.</li>
+        {% endfor %}
+      </ul>
+    </section>
+  </div>
+</div>
+{{ grafica_ingresos|json_script:"datosIngresos" }}
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'vendor/chartjs/chart.umd.js' %}"></script>
+<script src="{% static 'js/graficas.js' %}"></script>
+<script>
+  graficaBarras("graficaIngresos", JSON.parse(document.getElementById("datosIngresos").textContent), "Ingresos");
+</script>
+{% endblock %}

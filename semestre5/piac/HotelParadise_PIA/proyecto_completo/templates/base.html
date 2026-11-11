@@ -1,0 +1,127 @@
+{% load static %}<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Inicio{% endblock %} · {{ nombre_hotel }}</title>
+  {# Bootstrap 5 e íconos guardados localmente: el sistema funciona sin internet #}
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap-icons/bootstrap-icons.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/hotel.css' %}">
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+{% with seccion=request.resolver_match.app_name %}
+<div class="d-flex hp-shell">
+
+  {# ---------------- Barra lateral (menú de navegación) ---------------- #}
+  <aside class="hp-sidebar offcanvas-lg offcanvas-start" tabindex="-1" id="menuLateral" aria-label="Menú principal">
+    <div class="p-3 pt-4 d-flex flex-column h-100">
+      <div class="d-flex justify-content-between align-items-start px-2 mb-3">
+        <a class="hp-brand" href="{% url 'core:dashboard' %}">
+          Hotel Paradise
+          <small>Sistema de reservaciones</small>
+        </a>
+        <button type="button" class="btn-close btn-close-white d-lg-none" data-bs-dismiss="offcanvas" data-bs-target="#menuLateral" aria-label="Cerrar menú"></button>
+      </div>
+
+      <nav class="hp-nav nav flex-column">
+        <a class="nav-link {% if seccion == 'core' %}active{% endif %}" href="{% url 'core:dashboard' %}">
+          <i class="bi bi-grid-1x2"></i> Dashboard
+        </a>
+
+        {% if modulos.reservaciones and perms.reservaciones.view_reservacion %}
+          <div class="hp-nav-grupo">Recepción</div>
+          <a class="nav-link {% if request.resolver_match.url_name == 'disponibilidad' %}active{% endif %}" href="{% url 'reservaciones:disponibilidad' %}">
+            <i class="bi bi-calendar-check"></i> Disponibilidad
+          </a>
+          <a class="nav-link {% if seccion == 'reservaciones' and request.resolver_match.url_name != 'disponibilidad' %}active{% endif %}" href="{% url 'reservaciones:lista' %}">
+            <i class="bi bi-journal-bookmark"></i> Reservaciones
+          </a>
+        {% endif %}
+
+        {% if modulos.clientes and perms.clientes.view_cliente %}
+          <a class="nav-link {% if seccion == 'clientes' %}active{% endif %}" href="{% url 'clientes:lista' %}">
+            <i class="bi bi-people"></i> Clientes
+          </a>
+        {% endif %}
+
+        {% if modulos.habitaciones and perms.habitaciones.view_habitacion %}
+          <div class="hp-nav-grupo">Hotel</div>
+          <a class="nav-link {% if seccion == 'habitaciones' %}active{% endif %}" href="{% url 'habitaciones:lista' %}">
+            <i class="bi bi-door-closed"></i> Habitaciones
+          </a>
+        {% endif %}
+
+        {% if es_admin %}
+          <div class="hp-nav-grupo">Administración</div>
+          {% if modulos.reportes %}
+          <a class="nav-link {% if seccion == 'reportes' %}active{% endif %}" href="{% url 'reportes:general' %}">
+            <i class="bi bi-bar-chart-line"></i> Reportes
+          </a>
+          {% endif %}
+          <a class="nav-link {% if seccion == 'cuentas' %}active{% endif %}" href="{% url 'cuentas:usuarios' %}">
+            <i class="bi bi-person-gear"></i> Usuarios
+          </a>
+          {% if user.is_staff %}
+          <a class="nav-link" href="{% url 'admin:index' %}">
+            <i class="bi bi-sliders"></i> Django Admin
+          </a>
+          {% endif %}
+        {% endif %}
+      </nav>
+
+      <div class="mt-auto px-2 pt-4 small" style="color:#8783c9">
+        PIA · Fundamentos del Desarrollo Web
+      </div>
+    </div>
+  </aside>
+
+  {# ---------------- Contenido ---------------- #}
+  <div class="flex-grow-1 d-flex flex-column" style="min-width:0">
+    <header class="hp-topbar px-3 px-lg-4 py-2 d-flex align-items-center gap-3">
+      <button class="btn btn-outline-primary btn-sm d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#menuLateral" aria-controls="menuLateral">
+        <i class="bi bi-list"></i> Menú
+      </button>
+      <div class="ms-auto d-flex align-items-center gap-3">
+        {% if user.is_authenticated %}
+          <div class="text-end lh-sm d-none d-sm-block">
+            <div class="fw-semibold">{{ user.get_full_name|default:user.username }}</div>
+            <div class="hp-usuario-rol">{{ rol_usuario|default:"Usuario" }}</div>
+          </div>
+          {% if modulos.cuentas %}
+          {# Por seguridad, cerrar sesión se hace con POST + token CSRF #}
+          <form method="post" action="{% url 'cuentas:logout' %}" class="m-0">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-primary btn-sm" title="Cerrar sesión" aria-label="Cerrar sesión">
+              <i class="bi bi-box-arrow-right"></i><span class="d-none d-sm-inline"> Cerrar sesión</span>
+            </button>
+          </form>
+          {% endif %}
+        {% endif %}
+      </div>
+    </header>
+
+    <main class="p-3 p-lg-4 flex-grow-1">
+      {% if messages %}
+        <div class="mb-3">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+          </div>
+        {% endfor %}
+        </div>
+      {% endif %}
+
+      {% block contenido %}{% endblock %}
+    </main>
+  </div>
+</div>
+{% endwith %}
+
+<script src="{% static 'vendor/bootstrap/bootstrap.bundle.min.js' %}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block titulo %}{% if object %}Modificar reservación{% else %}Nueva reservación{% endif %}{% endblock %}
+{% block contenido %}
+<nav aria-label="breadcrumb"><ol class="breadcrumb small">
+  <li class="breadcrumb-item"><a href="{% url 'reservaciones:lista' %}">Reservaciones</a></li>
+  <li class="breadcrumb-item active">{% if object %}Modificar #{{ object.pk }}{% else %}Nueva{% endif %}</li>
+</ol></nav>
+<div class="hp-encabezado-pagina">
+  <h1>{% if object %}Modificar reservación #{{ object.pk }}{% else %}Nueva reservación{% endif %}</h1>
+  <p>El sistema revisa que la habitación esté libre en esas fechas antes de guardar. El total se calcula solo.</p>
+</div>
+
+<div class="row g-3">
+  <div class="col-xl-8">
+    <div class="hp-panel">
+      <form method="post" class="hp-panel-cuerpo" novalidate id="formReservacion">
+        {% csrf_token %}
+        {% include "partials/errores_formulario.html" %}
+        <div class="row g-3">
+          <div class="col-md-6">
+            {% include "partials/campo.html" with campo=form.cliente %}
+            {% if perms.clientes.add_cliente %}<div class="form-text"><a href="{% url 'clientes:crear' %}">¿No está registrado? Agrega al cliente</a></div>{% endif %}
+          </div>
+          <div class="col-md-6">{% include "partials/campo.html" with campo=form.habitacion %}</div>
+          <div class="col-md-4">{% include "partials/campo.html" with campo=form.fecha_entrada %}</div>
+          <div class="col-md-4">{% include "partials/campo.html" with campo=form.fecha_salida %}</div>
+          <div class="col-md-4">{% include "partials/campo.html" with campo=form.num_huespedes %}</div>
+          <div class="col-md-4">{% include "partials/campo.html" with campo=form.estado %}</div>
+          <div class="col-md-8">{% include "partials/campo.html" with campo=form.notas %}</div>
+        </div>
+        <div class="d-flex gap-2 mt-4">
+          <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> {% if object %}Guardar cambios{% else %}Confirmar reservación{% endif %}</button>
+          <a href="{% if object %}{{ object.get_absolute_url }}{% else %}{% url 'reservaciones:lista' %}{% endif %}" class="btn btn-outline-secondary">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col-xl-4">
+    <div class="hp-panel hp-panel-cuerpo">
+      <h2>Resumen</h2>
+      <div class="hp-total-estimado" aria-live="polite">
+        <div class="text-secondary small" id="detalleTotal">Elige habitación y fechas</div>
+        <strong id="totalEstimado">$0.00</strong>
+      </div>
+      <ul class="small text-secondary mt-3 mb-0 ps-3">
+        <li>La salida debe ser posterior a la entrada.</li>
+        <li>El día de salida de un huésped puede ser la entrada del siguiente.</li>
+        <li>Las reservaciones canceladas liberan la habitación.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+{{ form.precios|json_script:"precios" }}
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Calcula en pantalla el total estimado (el total definitivo lo calcula Django al guardar).
+(function () {
+  const precios = JSON.parse(document.getElementById("precios").textContent);
+  const hab = document.getElementById("id_habitacion");
+  const ent = document.getElementById("id_fecha_entrada");
+  const sal = document.getElementById("id_fecha_salida");
+  const total = document.getElementById("totalEstimado");
+  const detalle = document.getElementById("detalleTotal");
+  const formato = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" });
+
+  function recalcular() {
+    const precio = parseFloat(precios[hab.value] || 0);
+    const d1 = new Date(ent.value), d2 = new Date(sal.value);
+    const noches = Math.round((d2 - d1) / 86400000);
+    if (!precio || !ent.value || !sal.value) {
+      detalle.textContent = "Elige habitación y fechas"; total.textContent = formato.format(0); return;
+    }
+    if (noches <= 0) {
+      detalle.textContent = "La salida debe ser posterior a la entrada"; total.textContent = "—"; return;
+    }
+    detalle.textContent = noches + " noche" + (noches === 1 ? "" : "s") + " × " + formato.format(precio);
+    total.textContent = formato.format(noches * precio);
+  }
+  [hab, ent, sal].forEach(el => el && el.addEventListener("change", recalcular));
+  recalcular();
+})();
+</script>
+{% endblock %}

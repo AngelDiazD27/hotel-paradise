@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load static %}
+{% block titulo %}Reportes{% endblock %}
+{% block contenido %}
+<div class="hp-encabezado-pagina d-flex flex-wrap justify-content-between align-items-end gap-2">
+  <div>
+    <h1>Reportes y estadísticas</h1>
+    <p>Periodo del {{ desde|date:"d/m/Y" }} al {{ hasta|date:"d/m/Y" }}, según la fecha de entrada de cada reservación.</p>
+  </div>
+  <div class="d-flex gap-2 no-print">
+    <a href="{% url 'reportes:exportar_csv' %}?desde={{ desde|date:'Y-m-d' }}&hasta={{ hasta|date:'Y-m-d' }}" class="btn btn-outline-primary"><i class="bi bi-filetype-csv"></i> Exportar a Excel (CSV)</a>
+    <button type="button" class="btn btn-outline-secondary" onclick="window.print()"><i class="bi bi-printer"></i> Imprimir</button>
+  </div>
+</div>
+
+<form method="get" class="hp-panel hp-panel-cuerpo mb-3 no-print" novalidate>
+  <div class="row g-2 align-items-end">
+    <div class="col-md-4">{% include "partials/campo.html" with campo=form.desde %}</div>
+    <div class="col-md-4">{% include "partials/campo.html" with campo=form.hasta %}</div>
+    <div class="col-md-4"><button class="btn btn-primary w-100" type="submit"><i class="bi bi-funnel"></i> Aplicar periodo</button></div>
+  </div>
+</form>
+
+<section class="hp-indicadores mb-4" style="grid-template-columns:repeat(4,minmax(0,1fr))" aria-label="Resumen del periodo">
+  <div class="hp-indicador"><div class="hp-indicador-etiqueta">Reservaciones</div><div class="hp-indicador-valor">{{ resumen.total_reservaciones }}</div><div class="hp-indicador-nota">{{ resumen.canceladas }} cancelada{{ resumen.canceladas|pluralize }}</div></div>
+  <div class="hp-indicador"><div class="hp-indicador-etiqueta">Ticket promedio</div><div class="hp-indicador-valor">${{ resumen.ticket_promedio|floatformat:"0g" }}</div><div class="hp-indicador-nota">por reservación cobrada</div></div>
+  <div class="hp-indicador"><div class="hp-indicador-etiqueta">Ocupación del periodo</div><div class="hp-indicador-valor">{{ tasa_ocupacion }}%</div><div class="hp-indicador-nota">noches ocupadas / noches posibles</div></div>
+  <div class="hp-indicador hp-indicador-ingresos"><div class="hp-indicador-etiqueta">Ingresos</div><div class="hp-indicador-valor">${{ resumen.ingresos|floatformat:"2g" }}</div><div class="hp-indicador-nota">{{ resumen.clientes_nuevos }} cliente{{ resumen.clientes_nuevos|pluralize }} nuevo{{ resumen.clientes_nuevos|pluralize }}</div></div>
+</section>
+
+<div class="row g-3">
+  <div class="col-xl-8">
+    <section class="hp-panel h-100"><div class="hp-panel-cabecera"><h2 class="mb-0">Ingresos por mes</h2></div>
+      <div class="hp-panel-cuerpo"><canvas id="graficaMes" height="230" role="img" aria-label="Ingresos por mes"></canvas></div></section>
+  </div>
+  <div class="col-xl-4">
+    <section class="hp-panel h-100"><div class="hp-panel-cabecera"><h2 class="mb-0">Reservaciones por estado</h2></div>
+      <div class="hp-panel-cuerpo"><canvas id="graficaEstado" height="230" role="img" aria-label="Reservaciones por estado"></canvas></div></section>
+  </div>
+
+  <div class="col-xl-6">
+    <section class="hp-panel h-100"><div class="hp-panel-cabecera"><h2 class="mb-0">Ingresos por tipo de habitación</h2></div>
+      <div class="table-responsive"><table class="table">
+        <thead><tr><th>Tipo</th><th class="num">Reservaciones</th><th class="num">Ingresos</th></tr></thead>
+        <tbody>
+          {% for t in por_tipo %}<tr><td>{{ t.tipo }}</td><td class="num">{{ t.reservas }}</td><td class="num">${{ t.ingresos|floatformat:"2g" }}</td></tr>
+          {% empty %}<tr><td colspan="3" class="hp-vacio">Sin ingresos en el periodo.</td></tr>{% endfor %}
+        </tbody></table></div>
+      <div class="hp-panel-cuerpo pt-0"><canvas id="graficaTipo" height="150" role="img" aria-label="Ingresos por tipo de habitación"></canvas></div>
+    </section>
+  </div>
+  <div class="col-xl-6">
+    <section class="hp-panel h-100"><div class="hp-panel-cabecera"><h2 class="mb-0">Clientes con mayor consumo</h2></div>
+      <div class="table-responsive"><table class="table">
+        <thead><tr><th>Cliente</th><th class="num">Reservaciones</th><th class="num">Total gastado</th></tr></thead>
+        <tbody>
+          {% for c in mejores_clientes %}<tr><td><a href="{{ c.get_absolute_url }}">{{ c.nombre_completo }}</a></td><td class="num">{{ c.reservas }}</td><td class="num">${{ c.gastado|floatformat:"2g" }}</td></tr>
+          {% empty %}<tr><td colspan="3" class="hp-vacio">Sin datos en el periodo.</td></tr>{% endfor %}
+        </tbody></table></div>
+    </section>
+  </div>
+
+  <div class="col-12">
+    <section class="hp-panel"><div class="hp-panel-cabecera"><h2 class="mb-0">Ocupación por habitación</h2><span class="small text-secondary">Noches ocupadas dentro del periodo</span></div>
+      <div class="table-responsive"><table class="table">
+        <thead><tr><th>Habitación</th><th>Tipo</th><th class="num">Noches</th><th style="width:40%">Ocupación</th></tr></thead>
+        <tbody>
+          {% for o in ocupacion %}
+          <tr><td>{{ o.habitacion.numero }}</td><td>{{ o.habitacion.get_tipo_display }}</td><td class="num">{{ o.noches }}</td>
+            <td><div class="d-flex align-items-center gap-2"><div class="progress flex-grow-1" style="height:8px" role="progressbar" aria-label="Ocupación habitación {{ o.habitacion.numero }}" aria-valuenow="{{ o.porcentaje }}" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar" style="width:{{ o.porcentaje }}%"></div></div><span class="small num" style="width:3.5rem">{{ o.porcentaje }}%</span></div></td></tr>
+          {% endfor %}
+        </tbody></table></div>
+    </section>
+  </div>
+</div>
+{{ grafica_mes|json_script:"datosMes" }}
+{{ grafica_tipo|json_script:"datosTipo" }}
+{{ grafica_estado|json_script:"datosEstado" }}
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'vendor/chartjs/chart.umd.js' %}"></script>
+<script src="{% static 'js/graficas.js' %}"></script>
+<script>
+  const leer = (id) => JSON.parse(document.getElementById(id).textContent);
+  graficaBarras("graficaMes", leer("datosMes"), "Ingresos");
+  graficaBarras("graficaTipo", leer("datosTipo"), "Ingresos", true);
+  graficaDona("graficaEstado", leer("datosEstado"));
+</script>
+{% endblock %}
