@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block titulo %}{{ cliente }}{% endblock %}
+{% block contenido %}
+<nav aria-label="breadcrumb"><ol class="breadcrumb small">
+  <li class="breadcrumb-item"><a href="{% url 'clientes:lista' %}">Clientes</a></li>
+  <li class="breadcrumb-item active">{{ cliente }}</li>
+</ol></nav>
+
+<div class="row g-3">
+  <div class="col-lg-4">
+    <div class="hp-panel hp-panel-cuerpo">
+      <h1 class="mb-3">{{ cliente.nombre_completo }}</h1>
+      <dl class="mb-0">
+        <dt class="fw-normal text-secondary small">Correo</dt><dd><a href="mailto:{{ cliente.correo }}">{{ cliente.correo }}</a></dd>
+        <dt class="fw-normal text-secondary small">Teléfono</dt><dd>{{ cliente.telefono }}</dd>
+        <dt class="fw-normal text-secondary small">Cliente desde</dt><dd>{{ cliente.fecha_registro|date:"d \d\e F \d\e Y" }}</dd>
+      </dl>
+      <div class="d-flex flex-wrap gap-2 mt-3">
+        {% if modulos.reservaciones and perms.reservaciones.add_reservacion %}
+          <a href="{% url 'reservaciones:crear' %}?cliente={{ cliente.pk }}" class="btn btn-primary"><i class="bi bi-calendar-plus"></i> Nueva reservación</a>
+        {% endif %}
+        {% if perms.clientes.change_cliente %}
+          <a href="{% url 'clientes:editar' cliente.pk %}" class="btn btn-outline-primary"><i class="bi bi-pencil"></i> Editar</a>
+        {% endif %}
+        {% if perms.clientes.delete_cliente %}
+          <a href="{% url 'clientes:eliminar' cliente.pk %}" class="btn btn-outline-danger"><i class="bi bi-trash"></i> Eliminar</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% if modulos.reservaciones %}
+  <div class="col-lg-8">
+    <div class="hp-panel">
+      <div class="hp-panel-cabecera"><h2 class="mb-0">Historial de reservaciones</h2></div>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead><tr><th>Folio</th><th>Habitación</th><th>Entrada</th><th>Salida</th><th class="num">Total</th><th>Estado</th></tr></thead>
+          <tbody>
+          {% for r in cliente.reservaciones.all %}
+            <tr>
+              <td><a href="{% url 'reservaciones:detalle' r.pk %}">#{{ r.pk }}</a></td>
+              <td>{{ r.habitacion.numero }} · {{ r.habitacion.get_tipo_display }}</td>
+              <td>{{ r.fecha_entrada|date:"d/m/Y" }}</td>
+              <td>{{ r.fecha_salida|date:"d/m/Y" }}</td>
+              <td class="num">${{ r.total|floatformat:"2g" }}</td>
+              <td><span class="hp-estado hp-estado-{{ r.estado }}">{{ r.get_estado_display }}</span></td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="6" class="hp-vacio">Este cliente todavía no tiene reservaciones.</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
