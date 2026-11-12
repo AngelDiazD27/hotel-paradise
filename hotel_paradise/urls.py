@@ -22,6 +22,7 @@ urlpatterns = [
     path("", include("core.urls")),                    # Integrante 4
     path("cuentas/", include("cuentas.urls")),         # Integrante 5
     path("habitaciones/", include("habitaciones.urls")),   # Integrante 1
+    path("clientes/", include("clientes.urls")),       # Integrante 2
 ]
 
 # En modo desarrollo Django sirve las fotos subidas (carpeta media/).
