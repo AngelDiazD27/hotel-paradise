@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "core",            # Integrante 4 - Interfaz web y dashboard
     "cuentas",         # Integrante 5 - Login, logout y usuarios
     "habitaciones",    # Integrante 1 - Módulo Habitaciones
+    "clientes",        # Integrante 2 - Módulo Clientes
 ]
 
 MIDDLEWARE = [
