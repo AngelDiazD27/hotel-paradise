@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     # Apps del proyecto (una por integrante)
     "core",            # Integrante 4 - Interfaz web y dashboard
     "cuentas",         # Integrante 5 - Login, logout y usuarios
+    "habitaciones",    # Integrante 1 - Módulo Habitaciones
 ]
 
 MIDDLEWARE = [
@@ -115,6 +116,11 @@ STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
 
+# ---------------------------------------------------------------------------
+# Archivos subidos por el usuario (fotos de habitaciones) - Integrante 1
+# ---------------------------------------------------------------------------
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 
 # ---------------------------------------------------------------------------
