@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block titulo %}Habitaciones{% endblock %}
+{% block contenido %}
+<div class="hp-encabezado-pagina d-flex flex-wrap justify-content-between align-items-end gap-2">
+  <div>
+    <h1>Habitaciones</h1>
+    <p>{{ page_obj.paginator.count }} {{ page_obj.paginator.count|pluralize:"habitación encontrada,habitaciones encontradas" }}.</p>
+  </div>
+  {% if perms.habitaciones.add_habitacion %}
+    <a href="{% url 'habitaciones:crear' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nueva habitación</a>
+  {% endif %}
+</div>
+
+{# Búsqueda por número y por tipo de habitación #}
+<form method="get" class="hp-panel hp-panel-cuerpo mb-3">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-5">{% include "partials/campo.html" with campo=form.q %}</div>
+    <div class="col-md-3">{% include "partials/campo.html" with campo=form.tipo %}</div>
+    <div class="col-md-2">{% include "partials/campo.html" with campo=form.disponible %}</div>
+    <div class="col-md-2 d-flex gap-2">
+      <button class="btn btn-primary flex-grow-1" type="submit"><i class="bi bi-search"></i> Buscar</button>
+      <a class="btn btn-outline-secondary" href="{% url 'habitaciones:lista' %}" title="Limpiar filtros"><i class="bi bi-x-lg"></i></a>
+    </div>
+  </div>
+</form>
+
+<div class="row g-3">
+{% for h in habitaciones %}
+  <div class="col-sm-6 col-xl-4">
+    <article class="hp-panel h-100 d-flex flex-column">
+      {% if h.imagen %}
+        <img src="{{ h.imagen.url }}" alt="Fotografía de la habitación {{ h.numero }}" class="hp-foto">
+      {% else %}
+        <div class="hp-foto hp-foto-vacia"><i class="bi bi-image"></i></div>
+      {% endif %}
+      <div class="hp-panel-cuerpo d-flex flex-column flex-grow-1">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h2 class="h4 mb-0">Habitación {{ h.numero }}</h2>
+            <div class="text-secondary">{{ h.get_tipo_display }} · hasta {{ h.capacidad }} persona{{ h.capacidad|pluralize }}</div>
+          </div>
+          {% if h.disponible %}
+            <span class="hp-estado hp-estado-libre">En servicio</span>
+          {% else %}
+            <span class="hp-estado hp-estado-fuera">Fuera de servicio</span>
+          {% endif %}
+        </div>
+        <div class="mt-2 mb-3"><span class="hp-precio">${{ h.precio_noche|floatformat:"2g" }}</span> <span class="text-secondary">por noche</span></div>
+        <div class="mt-auto d-flex gap-2">
+          <a href="{% url 'habitaciones:detalle' h.pk %}" class="btn btn-sm btn-outline-primary">Ver detalle</a>
+          {% if perms.habitaciones.change_habitacion %}
+            <a href="{% url 'habitaciones:editar' h.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i> Editar</a>
+          {% endif %}
+        </div>
+      </div>
+    </article>
+  </div>
+{% empty %}
+  <div class="col-12">
+    <div class="hp-panel hp-vacio">
+      <i class="bi bi-door-closed"></i>
+      Ninguna habitación coincide con la búsqueda.
+      {% if perms.habitaciones.add_habitacion %}<div class="mt-2"><a href="{% url 'habitaciones:crear' %}">Registrar una habitación</a></div>{% endif %}
+    </div>
+  </div>
+{% endfor %}
+</div>
+
+{% include "partials/paginacion.html" %}
+{% endblock %}
