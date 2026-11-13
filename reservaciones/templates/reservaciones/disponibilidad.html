@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block titulo %}Disponibilidad{% endblock %}
+{% block contenido %}
+<div class="hp-encabezado-pagina">
+  <h1>Consultar disponibilidad</h1>
+  <p>Indica las fechas de la estancia y el sistema muestra sólo las habitaciones libres.</p>
+</div>
+
+<form method="get" class="hp-panel hp-panel-cuerpo mb-3" novalidate>
+  {% include "partials/errores_formulario.html" %}
+  <div class="row g-2 align-items-end">
+    <div class="col-md-3">{% include "partials/campo.html" with campo=form.fecha_entrada %}</div>
+    <div class="col-md-3">{% include "partials/campo.html" with campo=form.fecha_salida %}</div>
+    <div class="col-md-3">{% include "partials/campo.html" with campo=form.tipo %}</div>
+    <div class="col-md-1">{% include "partials/campo.html" with campo=form.huespedes %}</div>
+    <div class="col-md-2"><button class="btn btn-primary w-100" type="submit"><i class="bi bi-search"></i> Consultar</button></div>
+  </div>
+</form>
+
+{% if libres is not None %}
+  <h2 class="mb-3">
+    {{ libres|length }} {{ libres|length|pluralize:"habitación libre,habitaciones libres" }}
+    <span class="text-secondary fw-normal fs-6">del {{ datos.fecha_entrada|date:"d/m/Y" }} al {{ datos.fecha_salida|date:"d/m/Y" }} · {{ noches }} noche{{ noches|pluralize }}</span>
+  </h2>
+  <div class="row g-3">
+  {% for h in libres %}
+    <div class="col-sm-6 col-xl-4">
+      <article class="hp-panel h-100 d-flex flex-column">
+        {% if h.imagen %}<img src="{{ h.imagen.url }}" alt="Fotografía de la habitación {{ h.numero }}" class="hp-foto">{% else %}<div class="hp-foto hp-foto-vacia"><i class="bi bi-image"></i></div>{% endif %}
+        <div class="hp-panel-cuerpo d-flex flex-column flex-grow-1">
+          <h3 class="h4 mb-0">Habitación {{ h.numero }}</h3>
+          <div class="text-secondary">{{ h.get_tipo_display }} · hasta {{ h.capacidad }} persona{{ h.capacidad|pluralize }}</div>
+          <div class="my-3">
+            <span class="hp-precio">${{ h.total_estimado|floatformat:"2g" }}</span>
+            <span class="text-secondary small">en total · ${{ h.precio_noche|floatformat:"2g" }}/noche</span>
+          </div>
+          {% if perms.reservaciones.add_reservacion %}
+          <a class="btn btn-primary mt-auto" href="{% url 'reservaciones:crear' %}?habitacion={{ h.pk }}&fecha_entrada={{ datos.fecha_entrada|date:'Y-m-d' }}&fecha_salida={{ datos.fecha_salida|date:'Y-m-d' }}&num_huespedes={{ datos.huespedes }}">
+            <i class="bi bi-calendar-plus"></i> Reservar esta habitación
+          </a>
+          {% endif %}
+        </div>
+      </article>
+    </div>
+  {% empty %}
+    <div class="col-12"><div class="hp-panel hp-vacio"><i class="bi bi-calendar-x"></i>No hay habitaciones libres con esos criterios. Prueba otras fechas, otro tipo o menos huéspedes.</div></div>
+  {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}
