@@ -120,6 +120,11 @@ STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
 
+# ---------------------------------------------------------------------------
+# Archivos subidos por el usuario (fotos de habitaciones) - Integrante 1
+# ---------------------------------------------------------------------------
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 
 # ---------------------------------------------------------------------------
