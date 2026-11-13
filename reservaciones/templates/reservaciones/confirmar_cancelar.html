@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block titulo %}Cancelar reservación{% endblock %}
+{% block contenido %}
+<div class="hp-panel" style="max-width:640px">
+  <div class="hp-panel-cuerpo">
+    <h1 class="h3">¿Cancelar la reservación #{{ reservacion.pk }}?</h1>
+    <p class="mt-2">{{ reservacion.cliente.nombre_completo }} · Habitación {{ reservacion.habitacion.numero }}<br>
+      Del {{ reservacion.fecha_entrada|date:"d/m/Y" }} al {{ reservacion.fecha_salida|date:"d/m/Y" }} · ${{ reservacion.total|floatformat:"2g" }}</p>
+    <p class="text-secondary">La reservación se conserva en el historial con estado "Cancelada" y la habitación queda libre en esas fechas.</p>
+    <form method="post" class="d-flex gap-2">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger"><i class="bi bi-x-circle"></i> Sí, cancelar reservación</button>
+      <a href="{{ reservacion.get_absolute_url }}" class="btn btn-outline-secondary">No, volver</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

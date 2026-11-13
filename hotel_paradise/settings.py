@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "cuentas",         # Integrante 5 - Login, logout y usuarios
     "habitaciones",    # Integrante 1 - Módulo Habitaciones
     "clientes",        # Integrante 2 - Módulo Clientes
+    "reservaciones",   # Integrante 3 - Módulo Reservaciones
 ]
 
 MIDDLEWARE = [
