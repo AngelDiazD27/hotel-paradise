@@ -39,9 +39,11 @@ INSTALLED_APPS = [
     # Apps del proyecto (una por integrante)
     "core",            # Integrante 4 - Interfaz web y dashboard
     "cuentas",         # Integrante 5 - Login, logout y usuarios
+
     "habitaciones",    # Integrante 1 - Módulo Habitaciones
     "clientes",        # Integrante 2 - Módulo Clientes
     "reservaciones",   # Integrante 3 - Módulo Reservaciones
+    "reportes",        # Integrante 5 - Reportes y estadísticas
 ]
 
 MIDDLEWARE = [

@@ -20,11 +20,14 @@ admin.site.index_title = "Panel administrativo"
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("core.urls")),                    # Integrante 4
-    path("cuentas/", include("cuentas.urls")),         # Integrante 5
-    path("habitaciones/", include("habitaciones.urls")),   # Integrante 1
-    path("clientes/", include("clientes.urls")),       # Integrante 2
-    path("reservaciones/", include("reservaciones.urls")), # Integrante 3
-]
+        path("cuentas/", include("cuentas.urls")),      # Integrante 5
+
+        path("habitaciones/", include("habitaciones.urls")),   # Integrante 1
+        path("clientes/", include("clientes.urls")),       # Integrante 2
+        path("reservaciones/", include("reservaciones.urls")), # Integrante 3
+        path("reportes/", include("reportes.urls")),       # Integrante 5
+    
+    ]
 
 # En modo desarrollo Django sirve las fotos subidas (carpeta media/).
 if settings.DEBUG:
